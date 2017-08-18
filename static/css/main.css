@@ -1,40 +1,9 @@
-* { box-sizing: border-box }
 
-
-body {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: 'Roboto', sans-serif;
-	margin-top: 30px;
-
-}
 
 .action {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
-
-.last-reading {
-	text-align: center;
-	font-family: 'Luckiest Guy', cursive;
-	margin-bottom: 90px;
-}
-
-.last-reading p {
-	margin: 10px;
-}
-
-.last-reading [data-timestamp] {
-	font-size:calc(30px + 4vw)
-}
-
-.last-reading__level {
-	font-size: calc(40px + 13vw);
 }
 
 .readings__label {
