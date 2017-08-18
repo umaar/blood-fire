@@ -1,6 +1,7 @@
 import cleanWeirdBits from './clean-weird-bits.js';
 
 function thing(line) {
+
 	const parts = line.split(';');
 	const timestamp = cleanWeirdBits(parts[1]).replace(/\./g, ':');
 
