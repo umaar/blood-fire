@@ -1,3 +1,4 @@
 *.zip
 *.csv
 node_modules
+.next/

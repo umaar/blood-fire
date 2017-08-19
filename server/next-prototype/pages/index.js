@@ -1,6 +1,7 @@
 
 import React from 'react'
 import LastReading from '../components/last-reading'
+import ReadingItem from '../components/reading-item'
 import Head from 'next/head'
 
 //////////////
@@ -17,7 +18,14 @@ const allData = [];
 
 export default class MyPage extends React.Component {
 	static async getInitialProps () {
-		if (!allData.length) {
+		if (allData.length) {
+			console.log('We already have the data!');
+			console.log(allData[0]);
+
+			return {
+				data: allData
+			};
+		} else {
 			const gunzip = zlib.createGunzip();
 
 			var csvStream = csv()
@@ -32,18 +40,16 @@ export default class MyPage extends React.Component {
 			await download(url)
 				.pipe(gunzip)
 				.pipe(csvStream);
-		} else {
-			console.log('We already have the data!');
-			console.log(allData[0]);
-		}
 
-		return {
-			data: allData
-		};
+			return {
+				data: allData
+			};
+		}
 	}
 
 	render () {
 		const {data} = this.props;
+		const test = [{x:1, y:2}];
 		return (
 			<div>
 				<Head>
@@ -52,6 +58,34 @@ export default class MyPage extends React.Component {
 				</Head>
 				<div className="container">
 					<LastReading reading={data[0]} />
+
+					<style jsx>{`
+						h4 {
+							margin: 50px 0 20px 0;
+							text-align: center;
+							letter-spacing: 1px;
+							font-size: calc(10px + 2vw);
+						}
+
+						.readings {
+							margin-top: 40px;
+							overflow: hidden;
+						}
+
+						ul {
+							list-style-type: none;
+							padding: 0;
+						}
+					`}</style>
+
+					<div className="readings">
+						<h4 className="readings__label">Past readings</h4>
+						<ul>
+							{data.map(reading => (
+								<ReadingItem reading={reading} />
+							))}
+						</ul>
+					</div>
 				</div>
 			</div>
 		)
