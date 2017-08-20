@@ -1,28 +1,11 @@
 
 import Icon from '../components/icon'
 import TimeAgo from 'timeago-react';
+import lastReadingStyles from './last-reading-styles';
 
 export default ({reading}) => (
 	<div className="root">
-		<style jsx>{`
-			.root {
-				text-align: center;
-				font-family: 'Luckiest Guy', cursive;
-				margin-bottom: 90px;
-			}
-
-			p {
-				margin: 10px;
-			}
-
-			.time {
-				font-size: calc(30px + 4vw);
-			}
-
-			.level {
-				font-size: calc(40px + 13vw);
-			}
-		`}</style>
+		<style jsx>{lastReadingStyles}</style>
 
 		<p className="level">
 			{reading.level}

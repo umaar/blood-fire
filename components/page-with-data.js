@@ -1,27 +1,10 @@
 import ReadingList from './reading-list';
 import LastReading from './last-reading';
+import PageWithDataStyles from './page-with-data-styles';
 
 export default function PageWithData({data}) {
-
 	return <div className="container">
-		<style jsx>{`
-			h4 {
-				margin: 50px 0 20px 0;
-				text-align: center;
-				letter-spacing: 1px;
-				font-size: calc(10px + 2vw);
-			}
-
-			.readings {
-				margin-top: 40px;
-				overflow: hidden;
-			}
-
-			ul {
-				list-style-type: none;
-				padding: 0;
-			}
-		`}</style>
+		<style jsx>{PageWithDataStyles}</style>
 
 		<LastReading reading={data[0]} />
 
