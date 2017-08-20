@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "download": "^6.2.5",
+    "fast-csv": "^2.4.0",
     "next": "^3.0.6",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
