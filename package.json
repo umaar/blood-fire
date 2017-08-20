@@ -24,6 +24,7 @@
     "fs": false,
     "download": false,
     "fast-csv": false,
-    "zlib": false
+    "zlib": false,
+    "zlib2": false
   }
 }
