@@ -112,7 +112,7 @@ export default class Index extends React.Component {
 					<link href="https://fonts.googleapis.com/css?family=Luckiest+Guy|Roboto" rel="stylesheet" />
 				</Head>
 
-				{<LandingSection data={this.props.data} />}
+				<LandingSection data={this.props.data} />
 			</div>
 		);
 	}
