@@ -1,4 +1,4 @@
-import TimeAgo from 'timeago-react';
+import TimeAgoWrapper from './time-ago-wrapper';
 import Icon from '../components/icon'
 import ReadingItemStyles from './reading-item-styles';
 
@@ -13,9 +13,6 @@ export default ({reading}) => (
 		<p className="level">{reading.level}</p>
 		<p className="exact-timestamp">{reading.friendlyTime}</p>
 
-		<span className="timestamp">
-			<TimeAgo datetime={reading.timestamp} locale='en' />
-		</span>
-
+		<TimeAgoWrapper  time={reading.timestamp} />
 	</li>
 );

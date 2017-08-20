@@ -1,20 +1,21 @@
-
 import Icon from '../components/icon'
-import TimeAgo from 'timeago-react';
+import TimeAgoWrapper from './time-ago-wrapper';
 import lastReadingStyles from './last-reading-styles';
 
-export default ({reading}) => (
-	<div className="root">
-		<style jsx>{lastReadingStyles}</style>
+export default ({reading}) => {
+	console.log('###');
+	console.log(reading.timestamp);
 
-		<p className="level">
-			{reading.level}
-			<Icon level={reading.level} />
-		</p>
+	return (
+		<div className="root">
+			<style jsx>{lastReadingStyles}</style>
 
-		<span className="time">
-			<TimeAgo datetime={reading.timestamp} locale='en' />
-		</span>
-	</div>
-);
+			<p className="level">
+				{reading.level}
+				<Icon level={reading.level} />
+			</p>
+
+			<TimeAgoWrapper time={reading.timestamp} />
+		</div>)
+};
 

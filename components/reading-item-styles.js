@@ -28,7 +28,7 @@ export default `
 		margin-right: 20px;
 	}
 
-	.timestamp {
+	.time {
 		font-style: italic;
 		color: #ccc;
 		font-size: 14px;
