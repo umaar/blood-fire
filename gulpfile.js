@@ -11,7 +11,6 @@ const server = require('tiny-lr')();
 const sass = require('gulp-sass');
 const del = require('del');
 const vinylPaths = require('vinyl-paths');
-const babelify = require('babelify');
 const tap = require('gulp-tap');
 const browserify = require('browserify');
 const imagemin = require('gulp-imagemin');
