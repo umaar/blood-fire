@@ -6,13 +6,13 @@
 		app.use((req, res) => {
 			const err = new Error('Not Found');
 			err.status = 404;
-			res.status(err.status).render('error', {
+			res.status(err.status).render('errors', {
 				message: 'Not found'
 			});
 		});
 
 		app.use((err, req, res) => {
-			res.status(err.status || 500).render('error', {
+			res.status(err.status || 500).render('errors', {
 				message: 'Something went wrong'
 			});
 		});

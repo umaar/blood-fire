@@ -1,11 +1,24 @@
 const d3 = require('d3');
 
-const mockData = [...document.querySelectorAll('.readings__list li')].slice(0, 1000).map(el => {
+const mockData = [...document.querySelectorAll('.readings__list li')].map(el => {
 	return {
 		date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
 		value: parseFloat(el.querySelector('.readings__list__level').innerText)
 	};
-}).filter(mockData => !Number.isNaN(mockData.value));
+}).filter(mockData => !Number.isNaN(mockData.value)).sort((a, b) => {
+	const nameA = a.date;
+	const nameB = b.date;
+
+	if (nameA < nameB) {
+		return -1;
+	}
+
+	if (nameA > nameB) {
+		return 1;
+	}
+
+	return 0;
+});
 
 function init() {
 	const svg = d3.select('svg');
@@ -22,7 +35,7 @@ function init() {
 	// const parseTime = d3.timeParse('%Y');
 
 	const bisectDate = d3.bisector(d => {
-		return d.year;
+		return d.date;
 	}).left;
 
 	const x = d3.scaleTime().range([0, width]);
@@ -100,13 +113,14 @@ function init() {
 			focus.style('display', null);
 		}).on('mouseout', () => {
 			focus.style('display', 'none');
-		}).on('mousemove', () => {});
+		}).on('mousemove', mousemove);
 
 	function mousemove() {
 		const x0 = x.invert(d3.mouse(this)[0]);
 		const i = bisectDate(mockData, x0, 1);
 		const d0 = mockData[i - 1];
 		const d1 = mockData[i];
+
 		const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
 		focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')');
@@ -119,4 +133,4 @@ function init() {
 	}
 }
 
-module.exports = { init };
+module.exports = {init};

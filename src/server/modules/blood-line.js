@@ -10,7 +10,6 @@ function calculateLevel(level) {
 	return parseFloat((parseInt(level, 10) / 18)).toFixed(1);
 }
 
-
 function getLevelDetails(level) {
 	if (level >= 8.5) {
 		return {
@@ -68,6 +67,8 @@ function transformer(_rawLine) {
 		parsedTimestamp.setHours(parsedTimestamp.getHours() - 1);
 	}
 
+	// console.log(parts);
+
 	const level = calculateLevel(parts[5]);
 	const {icon, description: levelDescription} = getLevelDetails(level);
 
@@ -79,7 +80,7 @@ function transformer(_rawLine) {
 		level
 	};
 
-	if (entry.level) {
+	if (!Number.isNaN(parseFloat(entry.level))) {
 		return entry;
 	}
 }

@@ -5,6 +5,7 @@
 	const path = require('path');
 	const bodyParser = require('body-parser');
 	const nunjucks = require('nunjucks');
+	const config = require('config');
 
 	const viewFolders = [
 		path.join(__dirname, '..', 'views')
@@ -19,7 +20,7 @@
 		});
 
 		app.locals.config = {
-			globalConfigExample: 'I am available everywhere'
+			analyticsTrackingCode: config.get('analyticsTrackingCode')
 		};
 
 		app.set('view engine', 'html');
