@@ -1,10 +1,11 @@
 const d3 = require('d3');
-let mockData = require('./mock-data');
 
-mockData = mockData.map(mockData => {
-	mockData.date = new Date(mockData.date);
-	return mockData;
-});
+const mockData = [...document.querySelectorAll('.readings__list li')].slice(0, 1000).map(el => {
+	return {
+		date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
+		value: parseFloat(el.querySelector('.readings__list__level').innerText)
+	};
+}).filter(mockData => !Number.isNaN(mockData.value));
 
 function init() {
 	const svg = d3.select('svg');
@@ -18,7 +19,7 @@ function init() {
 	const width = Number(svg.attr('width')) - margin.left - margin.right;
 	const height = Number(svg.attr('height')) - margin.top - margin.bottom;
 
-	const parseTime = d3.timeParse('%Y');
+	// const parseTime = d3.timeParse('%Y');
 
 	const bisectDate = d3.bisector(d => {
 		return d.year;
@@ -28,7 +29,7 @@ function init() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const line = d3.line().x(d => {
-		return x(d.year);
+		return x(d.date);
 	}).y(d => {
 		return y(d.value);
 	});
@@ -36,36 +37,16 @@ function init() {
 	const g = svg.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-	console.log(mockData);
-
-	const data = [
-		{year: '2005', value: 771900},
-		{year: '2006', value: 771500},
-		{year: '2007', value: 770500},
-		{year: '2008', value: 770400},
-		{year: '2009', value: 771000},
-		{year: '2010', value: 772400},
-		{year: '2011', value: 774100},
-		{year: '2012', value: 776700},
-		{year: '2013', value: 777100},
-		{year: '2014', value: 779200},
-		{year: '2015', value: 782300}
-	];
-
-	data.forEach(d => {
-		d.year = parseTime(d.year);
+	mockData.forEach(d => {
 		d.value = Number(d.value);
 	});
 
-	x.domain(d3.extent(data, d => {
-		return d.year;
-	}));
+	x.domain(d3.extent(mockData, d => d.date));
 
-	y.domain([d3.min(data, d => {
-		return d.value;
-	}) / 1.005, d3.max(data, d => {
-		return d.value;
-	}) * 1.005]);
+	y.domain([
+		d3.min(mockData, d => d.value) / 1.005,
+		d3.max(mockData, d => d.value) * 1.005
+	]);
 
 	g.append('g')
 		.attr('class', 'axis axis--x')
@@ -74,9 +55,7 @@ function init() {
 
 	g.append('g')
 		.attr('class', 'axis axis--y')
-		.call(d3.axisLeft(y).ticks(6).tickFormat(d => {
-			return parseInt(d / 1000, 10) + 'k';
-		}))
+		.call(d3.axisLeft(y).ticks(6).tickFormat(d => d))
 		.append('text')
 		.attr('class', 'axis-title')
 		.attr('transform', 'rotate(-90)')
@@ -84,10 +63,10 @@ function init() {
 		.attr('dy', '.71em')
 		.style('text-anchor', 'end')
 		.attr('fill', '#5D6971')
-		.text('(Population)');
+		.text('(mmol/L)');
 
 	g.append('path')
-		.datum(data)
+		.datum(mockData)
 		.attr('class', 'line')
 		.attr('d', line);
 
@@ -121,16 +100,16 @@ function init() {
 			focus.style('display', null);
 		}).on('mouseout', () => {
 			focus.style('display', 'none');
-		}).on('mousemove', mousemove);
+		}).on('mousemove', () => {});
 
 	function mousemove() {
 		const x0 = x.invert(d3.mouse(this)[0]);
-		const i = bisectDate(data, x0, 1);
-		const d0 = data[i - 1];
-		const d1 = data[i];
-		const d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+		const i = bisectDate(mockData, x0, 1);
+		const d0 = mockData[i - 1];
+		const d1 = mockData[i];
+		const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
-		focus.attr('transform', 'translate(' + x(d.year) + ',' + y(d.value) + ')');
+		focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')');
 		focus.select('text').text(() => {
 			return d.value;
 		});
