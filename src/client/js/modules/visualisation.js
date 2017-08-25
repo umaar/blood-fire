@@ -1,11 +1,25 @@
 const d3 = require('d3');
+let mockData = require('./mock-data');
+
+mockData = mockData.map(mockData => {
+	mockData.date = new Date(mockData.date);
+	return mockData;
+});
 
 function init() {
 	const svg = d3.select('svg');
-	const margin = {top: 20, right: 20, bottom: 30, left: 40};
+	const margin = {
+		top: 50,
+		right: 50,
+		bottom: 50,
+		left: 50
+	};
+
 	const width = Number(svg.attr('width')) - margin.left - margin.right;
 	const height = Number(svg.attr('height')) - margin.top - margin.bottom;
+
 	const parseTime = d3.timeParse('%Y');
+
 	const bisectDate = d3.bisector(d => {
 		return d.year;
 	}).left;
@@ -21,6 +35,8 @@ function init() {
 
 	const g = svg.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+	console.log(mockData);
 
 	const data = [
 		{year: '2005', value: 771900},
@@ -59,7 +75,7 @@ function init() {
 	g.append('g')
 		.attr('class', 'axis axis--y')
 		.call(d3.axisLeft(y).ticks(6).tickFormat(d => {
-			return parseInt(d / 1000) + 'k';
+			return parseInt(d / 1000, 10) + 'k';
 		}))
 		.append('text')
 		.attr('class', 'axis-title')
@@ -68,7 +84,7 @@ function init() {
 		.attr('dy', '.71em')
 		.style('text-anchor', 'end')
 		.attr('fill', '#5D6971')
-		.text('Population)');
+		.text('(Population)');
 
 	g.append('path')
 		.datum(data)
@@ -103,8 +119,7 @@ function init() {
 		.attr('height', height)
 		.on('mouseover', () => {
 			focus.style('display', null);
-		})
-		.on('mouseout', () => {
+		}).on('mouseout', () => {
 			focus.style('display', 'none');
 		}).on('mousemove', mousemove);
 
@@ -125,6 +140,4 @@ function init() {
 	}
 }
 
-module.exports = {
-	init
-};
+module.exports = { init };
