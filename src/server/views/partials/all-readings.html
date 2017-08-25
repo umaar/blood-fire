@@ -1,0 +1,20 @@
+<div class="readings">
+	<h4 class="readings__label">Past readings</h4>
+
+	<ul class="readings__list">
+		{% for reading in allReadings %}
+			<li>
+				<span class="readings__list__icon">
+					{{reading.icon}}
+				</span>
+
+				<p class="readings__list__level">{{reading.level}}</p>
+				<p datetime="{{reading.timestamp}}" class="readings__list__friendly-time"></p>
+
+				<span class="readings__list__timestamp">
+					{{reading.truncatedTimestamp}}
+				</span>
+			</li>
+		{% endfor %}
+	</ul>
+</div>

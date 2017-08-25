@@ -1,0 +1,51 @@
+.readings {
+	margin-top: 40px;
+	overflow: hidden;
+}
+
+.readings__label {
+	margin: 50px 0 20px 0;
+	text-align: center;
+	letter-spacing: 1px;
+	font-size: calc(10px + 2vw);
+}
+
+.readings__list {
+	list-style-type: none;
+	padding: 0;
+
+	p {
+		margin: 0;
+	}
+
+	li {
+		margin-top: 20px;
+		padding: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+.readings__list__timestamp {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.readings__list__level {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 24px;
+    padding-right: 20px;
+    margin-top: 7px;
+    letter-spacing: 1px;
+}
+
+.readings__list__icon {
+	margin-right: 20px;
+}
+
+.readings__list__timestamp {
+	font-style: italic;
+	color: #ccc;
+	font-size: 14px;
+}

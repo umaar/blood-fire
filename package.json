@@ -6,27 +6,43 @@
   "private": "true",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "next",
-    "build": "next build",
-    "start": "npm run build && ./node_modules/.bin/next start --port 80",
+    "dev": "export NODE_ENV=development && ./node_modules/gulp/bin/gulp.js",
+    "start": "export NODE_ENV=production && npm run build && node ./src/server/server.js",
+    "build": "./node_modules/gulp/bin/gulp.js build",
     "deploy": "we deploy -p bloodfire"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.1",
+    "config": "^1.25.1",
+    "debug": "^3.0.1",
     "download": "^6.2.5",
+    "express": "^4.15.2",
+    "express-rev": "^0.1.2",
     "fast-csv": "^2.4.0",
-    "next": "^3.0.6",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "timeago-react": "^1.2.2"
+    "gulp-util": "^3.0.8",
+    "nunjucks": "^3.0.0"
   },
-  "browser": {
-    "fs": false,
-    "download": false,
-    "fast-csv": false,
-    "zlib": false,
-    "zlib2": false
+  "devDependencies": {
+    "timeago.js": "^3.0.2",
+    "browserify": "^14.1.0",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-nodemon": "^2.1.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-rev": "^8.0.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-tap": "^1.0.1",
+    "run-sequence": "^2.0.0",
+    "tiny-lr": "^1.0.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-paths": "^2.1.0",
+    "vinyl-source-stream": "^1.1.0",
+    "xo": "^0.18.0"
   }
 }

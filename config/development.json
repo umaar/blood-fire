@@ -1,0 +1,5 @@
+{
+  "environment": "development",
+  "port": "3000",
+  "dataURL": "http://127.0.0.1:3000/GlicemiaMisurazioni.csv.gz"
+}

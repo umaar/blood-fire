@@ -1,16 +1,12 @@
-import download from 'download';
-import fs from 'fs';
-import zlib from 'zlib';
-import csv from 'fast-csv';
+const zlib = require('zlib');
+const download = require('download');
+const csv = require('fast-csv');
+const config = require('config');
 
-import transformData from './blood-line';
+const transformData = require('./blood-line');
 
-const productionURL = 'https://www.dropbox.com/sh/pprrtnz0v6zt978/AABtu7bXJ4Vk5pxhGnQtIjMXa/GlicemiaMisurazioni.csv.gz?dl=1';
-
-const developmentURL = 'http://127.0.0.1:8080/GlicemiaMisurazioni.csv.gz'
-
-export default function fetchAllData({isDevelopment}) {
-	const url = isDevelopment ? developmentURL : productionURL;
+module.exports = () => {
+	const url = config.get('dataURL');
 
 	console.log(`Fetching new data (${url})`);
 
@@ -31,7 +27,7 @@ export default function fetchAllData({isDevelopment}) {
 			resolve(storage);
 		}
 
-		var csvStream = csv()
+		const csvStream = csv()
 			.on('data', handleCSVEntry)
 			.on('end', handleCSVFinish);
 

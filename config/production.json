@@ -1,0 +1,5 @@
+{
+	"environment": "production",
+	"port": "80",
+	"dataURL": "https://www.dropbox.com/sh/pprrtnz0v6zt978/AABtu7bXJ4Vk5pxhGnQtIjMXa/GlicemiaMisurazioni.csv.gz?dl=1"
+}
