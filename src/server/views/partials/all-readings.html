@@ -4,16 +4,27 @@
 	<ul class="readings__list">
 		{% for reading in allReadings %}
 			<li>
-				<span class="readings__list__icon">
-					{{reading.icon}}
-				</span>
+				<div class="readings__list__level">
+					<span class="readings__list__icon">
+						{{reading.icon}}
+					</span>
 
-				<p class="readings__list__level">{{reading.level}}</p>
-				<p datetime="{{reading.timestamp}}" class="readings__list__friendly-time"></p>
+					<span class="readings__list_level-figure">
+						{{reading.level}}
+					</span>
+				</div>
 
-				<span class="readings__list__timestamp">
-					{{reading.truncatedTimestamp}}
-				</span>
+				<p class="readings__list__level-description">
+					{{reading.levelDescription}}
+				</p>
+
+				<div class="readings__list__meta">
+					<span datetime="{{reading.timestamp}}" class="readings__list__friendly-time"></span>
+
+					<span class="readings__list__timestamp">
+						{{reading.truncatedTimestamp}}
+					</span>
+				</div>
 			</li>
 		{% endfor %}
 	</ul>

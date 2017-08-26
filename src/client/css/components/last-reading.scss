@@ -9,9 +9,13 @@
 }
 
 .last-reading__time {
-	font-size: calc(30px + 4vw);
+	font-size: calc(10px + 2vw);
 }
 
 .last-reading__level {
 	font-size: calc(40px + 13vw);
+}
+
+.last-reading__description {
+	font-size: calc(20px + 4vw);
 }

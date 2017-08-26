@@ -3,7 +3,7 @@ const d3 = require('d3');
 const mockData = [...document.querySelectorAll('.readings__list li')].map(el => {
 	return {
 		date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
-		value: parseFloat(el.querySelector('.readings__list__level').innerText)
+		value: parseFloat(el.querySelector('.readings__list_level-figure').innerText)
 	};
 }).filter(mockData => !Number.isNaN(mockData.value)).sort((a, b) => {
 	const nameA = a.date;
@@ -31,8 +31,6 @@ function init() {
 
 	const width = Number(svg.attr('width')) - margin.left - margin.right;
 	const height = Number(svg.attr('height')) - margin.top - margin.bottom;
-
-	// const parseTime = d3.timeParse('%Y');
 
 	const bisectDate = d3.bisector(d => {
 		return d.date;

@@ -13,10 +13,8 @@
 .readings__list {
 	list-style-type: none;
 	padding: 0;
-
-	p {
-		margin: 0;
-	}
+	max-width: 700px;
+	margin: 0 auto;
 
 	li {
 		margin-top: 20px;
@@ -24,15 +22,32 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+
+		display: flex;
 	}
 }
 
-.readings__list__timestamp {
-	padding-left: 10px;
-	padding-right: 10px;
+.readings__list__meta {
+	display: flex;
+	flex-direction: column;
+    text-align: right;
 }
 
 .readings__list__level {
+	display: flex;
+	text-align: center;
+	flex-direction: column;
+}
+
+.readings__list__level-description {
+	margin: 25px 40px;
+    width: 150px;
+}
+
+.readings__list__timestamp {
+}
+
+.readings__list_level-figure {
     font-family: 'Luckiest Guy', cursive;
     font-size: 24px;
     padding-right: 20px;
@@ -48,4 +63,8 @@
 	font-style: italic;
 	color: #ccc;
 	font-size: 14px;
+}
+
+.readings__list__friendly-time {
+	margin-bottom: 5px;
 }
