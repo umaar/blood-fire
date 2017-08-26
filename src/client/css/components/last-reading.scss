@@ -1,7 +1,7 @@
 .last-reading {
 	text-align: center;
 	font-family: 'Luckiest Guy', cursive;
-	margin-bottom: 90px;
+	margin-bottom: 30px;
 
 	p {
 		margin: 10px;
@@ -13,9 +13,9 @@
 }
 
 .last-reading__level {
-	font-size: calc(40px + 13vw);
+	font-size: calc(20px + 3vw);
 }
 
 .last-reading__description {
-	font-size: calc(20px + 4vw);
+	font-size: calc(30px + 4vw);
 }

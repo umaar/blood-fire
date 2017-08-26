@@ -21,6 +21,10 @@ const mockData = [...document.querySelectorAll('.readings__list li')].map(el => 
 });
 
 function init() {
+	const desiredWidth = Math.min(parseInt(window.getComputedStyle(document.querySelector('.container')).width), 1000);
+
+	document.querySelector('svg').setAttribute('width', desiredWidth);
+
 	const svg = d3.select('svg');
 	const margin = {
 		top: 50,
