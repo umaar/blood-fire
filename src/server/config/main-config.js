@@ -6,6 +6,7 @@
 	const bodyParser = require('body-parser');
 	const nunjucks = require('nunjucks');
 	const config = require('config');
+	const compression = require('compression');
 
 	const viewFolders = [
 		path.join(__dirname, '..', 'views')
@@ -24,6 +25,8 @@
 		};
 
 		app.set('view engine', 'html');
+
+		app.use(compression());
 
 		app.use(rev({
 			manifest: 'dist/rev-manifest.json',
