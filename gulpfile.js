@@ -15,29 +15,35 @@ const tap = require('gulp-tap');
 const browserify = require('browserify');
 const imagemin = require('gulp-imagemin');
 const sourcemaps = require('gulp-sourcemaps');
-
+const minify = require('uglify-es').minify;
+const rollup = require('rollup');
+const resolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const uglify = require('rollup-plugin-uglify');
+const revdel = require('gulp-rev-delete-original');
 const rev = require('gulp-rev');
 
-// *** config *** //
+const outputPath = 'dist';
 
 const paths = {
+	outputPath,
 	copy: {
 		input: [
 			'src/client/*.*'
 		],
-		output: 'dist/'
+		output: outputPath + '/'
 	},
 	scripts: {
 		input: [
 			'src/client/js/*.js'
 		],
-		output: 'dist/js/'
+		output: outputPath + '/js/'
 	},
 	styles: {
 		input: [
 			'src/client/css/*.scss'
 		],
-		output: 'dist/css/'
+		output: outputPath + '/css/'
 	},
 	images: {
 		input: [
@@ -45,7 +51,7 @@ const paths = {
 			'src/client/img/**/*.png',
 			'src/client/img/**/*.svg'
 		],
-		output: 'dist/img/'
+		output: outputPath + '/img/'
 	},
 	server: path.join('src', 'server', 'server.js')
 };
@@ -92,43 +98,52 @@ gulp.task('styles', () => {
 		.pipe(sass().on('error', sass.logError))
 		.pipe(rev())
 		.pipe(sourcemaps.write('./'))
-	    .pipe(gulp.dest('./dist'))
-	    .pipe(rev.manifest('dist/rev-manifest.json',{
-	    	merge: true
-	    }))
-	    .pipe(gulp.dest('.'));
+		.pipe(gulp.dest('./dist'))
+		.pipe(rev.manifest('dist/rev-manifest.json',{
+			merge: true
+		}))
+		.pipe(gulp.dest('.'));
 });
 
 const gutil = require('gulp-util');
 
-gulp.task('scripts', () => {
-	return gulp.src(paths.scripts.input, {base: './src/client'})
-        .pipe(tap(function (file) {
-            file.contents = browserify(file.path, {
-        		debug: true
-        	}).bundle();
-        }))
-        .pipe(buffer())
-        .on('error', err => {
-        	gutil.log(gutil.colors.red('[Error]'), err.toString());
-        })
-		.pipe(rev())
-	    .pipe(gulp.dest('./dist'))
-	    .pipe(rev.manifest('dist/rev-manifest.json',{
-	    	merge: true
-	    }))
-	    .pipe(gulp.dest('.'));
+gulp.task('scripts', async function () {
+	const bundle = await rollup.rollup({
+		input: 'src/client/js/main.js',
+		plugins: [
+			resolve(),
+			commonjs(),
+			uglify({}, minify)
+		]
+	});
+
+	await bundle.write({
+		file: paths.outputPath + '/js/main.js',
+		format: 'iife',
+		name: 'library',
+		sourcemap: true
+	});
+
+	return gulp.src(paths.scripts.output + '*', {
+		base: paths.outputPath
+	}).pipe(rev())
+		.pipe(revdel())
+		.pipe(gulp.dest(paths.outputPath))
+		.pipe(rev.manifest(paths.outputPath + '/rev-manifest.json',{
+			merge: true
+		}))
+		.pipe(gulp.dest('.'));
 });
 
 gulp.task('images', () => {
 	return gulp.src(paths.images.input, {base: './src/client'})
 		.pipe(imagemin())
 		.pipe(rev())
-	    .pipe(gulp.dest('./dist'))
-	    .pipe(rev.manifest('dist/rev-manifest.json',{
-	    	merge: true
-	    }))
-	    .pipe(gulp.dest('.'));
+		.pipe(gulp.dest('./dist'))
+		.pipe(rev.manifest('dist/rev-manifest.json',{
+			merge: true
+		}))
+		.pipe(gulp.dest('.'));
 });
 
 gulp.task('copy', () => {

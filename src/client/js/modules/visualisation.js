@@ -1,31 +1,46 @@
-const d3 = require('d3');
+/* global window, document */
 
-const mockData = [...document.querySelectorAll('.readings__list li')].map(el => {
-	return {
-		date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
-		value: parseFloat(el.querySelector('.readings__list_level-figure').innerText)
-	};
-}).filter(mockData => !Number.isNaN(mockData.value)).sort((a, b) => {
-	const nameA = a.date;
-	const nameB = b.date;
-
-	if (nameA < nameB) {
-		return -1;
-	}
-
-	if (nameA > nameB) {
-		return 1;
-	}
-
-	return 0;
-});
+import {
+	select,
+	bisector,
+	scaleTime,
+	scaleLinear,
+	line,
+	extent,
+	axisBottom,
+	axisLeft,
+	min,
+	max,
+	mouse
+} from 'd3';
 
 function init() {
-	const desiredWidth = Math.min(parseInt(window.getComputedStyle(document.querySelector('.container')).width), 1000);
+	const mockData = [...document.querySelectorAll('.readings__list li')].map(el => {
+		return {
+			date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
+			value: parseFloat(el.querySelector('.readings__list_level-figure').innerText)
+		};
+	}).filter(mockData => !Number.isNaN(mockData.value)).sort((a, b) => {
+		const nameA = a.date;
+		const nameB = b.date;
+
+		if (nameA < nameB) {
+			return -1;
+		}
+
+		if (nameA > nameB) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+	const containerStyles = window.getComputedStyle(document.querySelector('.container'));
+	const desiredWidth = Math.min(parseInt(containerStyles.width, 10), 1000);
 
 	document.querySelector('svg').setAttribute('width', desiredWidth);
 
-	const svg = d3.select('svg');
+	const svg = select('svg');
 	const margin = {
 		top: 50,
 		right: 50,
@@ -36,18 +51,16 @@ function init() {
 	const width = Number(svg.attr('width')) - margin.left - margin.right;
 	const height = Number(svg.attr('height')) - margin.top - margin.bottom;
 
-	const bisectDate = d3.bisector(d => {
+	const bisectDate = bisector(d => {
 		return d.date;
 	}).left;
 
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
+	const x = scaleTime().range([0, width]);
+	const y = scaleLinear().range([height, 0]);
 
-	const line = d3.line().x(d => {
-		return x(d.date);
-	}).y(d => {
-		return y(d.value);
-	});
+	const lines = line()
+		.x(d => x(d.date))
+		.y(d => y(d.value));
 
 	const g = svg.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
@@ -56,21 +69,21 @@ function init() {
 		d.value = Number(d.value);
 	});
 
-	x.domain(d3.extent(mockData, d => d.date));
+	x.domain(extent(mockData, d => d.date));
 
 	y.domain([
-		d3.min(mockData, d => d.value) / 1.005,
-		d3.max(mockData, d => d.value) * 1.005
+		min(mockData, d => d.value) / 1.005,
+		max(mockData, d => d.value) * 1.005
 	]);
 
 	g.append('g')
 		.attr('class', 'axis axis--x')
 		.attr('transform', 'translate(0,' + height + ')')
-		.call(d3.axisBottom(x));
+		.call(axisBottom(x));
 
 	g.append('g')
 		.attr('class', 'axis axis--y')
-		.call(d3.axisLeft(y).ticks(6).tickFormat(d => d))
+		.call(axisLeft(y).ticks(6).tickFormat(d => d))
 		.append('text')
 		.attr('class', 'axis-title')
 		.attr('transform', 'rotate(-90)')
@@ -83,7 +96,7 @@ function init() {
 	g.append('path')
 		.datum(mockData)
 		.attr('class', 'line')
-		.attr('d', line);
+		.attr('d', lines);
 
 	const focus = g.append('g')
 		.attr('class', 'focus')
@@ -118,7 +131,7 @@ function init() {
 		}).on('mousemove', mousemove);
 
 	function mousemove() {
-		const x0 = x.invert(d3.mouse(this)[0]);
+		const x0 = x.invert(mouse(this)[0]);
 		const i = bisectDate(mockData, x0, 1);
 		const d0 = mockData[i - 1];
 		const d1 = mockData[i];
@@ -135,4 +148,4 @@ function init() {
 	}
 }
 
-module.exports = {init};
+export default {init};

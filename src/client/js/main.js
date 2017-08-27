@@ -1,8 +1,7 @@
 /* global window, document */
 
-const timeago = require('timeago.js');
-
-const visualisation = require('./modules/visualisation');
+import timeago from 'timeago.js';
+import visualisation from './modules/visualisation';
 
 function init() {
 	const els = document.querySelectorAll('[datetime]');
