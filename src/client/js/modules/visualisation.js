@@ -52,7 +52,12 @@ function setupChartControls() {
 	const timeKeys = {
 		'past-24-hours'() {
 			const date = new Date();
-			date.setHours(date.getHours() - 1);
+			date.setDate(date.getDate() - 1);
+			return date;
+		},
+		'past-3-days'() {
+			const date = new Date();
+			date.setDate(date.getDate() - 3);
 			return date;
 		},
 		'past-week'() {
@@ -71,9 +76,13 @@ function setupChartControls() {
 	};
 
 	const controlsContainer = document.querySelector('.visualisation__controls');
-	[...controlsContainer.querySelectorAll('[data-time-key]')].forEach(button => {
-		button.addEventListener('click', evt => {
-			const selectedStartTime = timeKeys[evt.target.dataset.timeKey]();
+	const buttons = [...controlsContainer.querySelectorAll('[data-time-key]')];
+
+	buttons.forEach(button => {
+		button.addEventListener('click', ({target}) => {
+			removeDisabledStateFromButtons(buttons);
+			target.disabled = true;
+			const selectedStartTime = timeKeys[target.dataset.timeKey]();
 
 			const allData = getReadings();
 
@@ -81,15 +90,20 @@ function setupChartControls() {
 				return reading.date > selectedStartTime;
 			});
 
-			console.log(matchingReadings);
 			createChart(matchingReadings);
 		});
 	});
 }
 
+function removeDisabledStateFromButtons(buttons) {
+	buttons.forEach(button => {
+		button.disabled = false;
+	});
+}
+
 function createChart(data) {
 	const svg = select('svg');
-	svg.selectAll("*").remove();
+	svg.selectAll('*').remove();
 
 	const margin = {
 		top: 50,
@@ -198,8 +212,7 @@ function createChart(data) {
 
 function init() {
 	initialiseChart();
-	const data = getReadings();
-	createChart(data);
+	document.querySelector('[data-time-key="past-week"]').click();
 }
 
 export default {init};
