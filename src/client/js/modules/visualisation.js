@@ -14,13 +14,13 @@ import {
 	mouse
 } from 'd3';
 
-function init() {
-	const mockData = [...document.querySelectorAll('.readings__list li')].map(el => {
+function getReadings() {
+	const data = [...document.querySelectorAll('.readings__list li')].map(el => {
 		return {
 			date: new Date(el.querySelector('[datetime]').getAttribute('datetime')),
 			value: parseFloat(el.querySelector('.readings__list_level-figure').innerText)
 		};
-	}).filter(mockData => !Number.isNaN(mockData.value)).sort((a, b) => {
+	}).filter(data => !Number.isNaN(data.value)).sort((a, b) => {
 		const nameA = a.date;
 		const nameB = b.date;
 
@@ -35,12 +35,62 @@ function init() {
 		return 0;
 	});
 
+	return data;
+}
+
+function getPreferredChartWidth() {
 	const containerStyles = window.getComputedStyle(document.querySelector('.container'));
-	const desiredWidth = Math.min(parseInt(containerStyles.width, 10), 1000);
+	return Math.min(parseInt(containerStyles.width, 10), 1000);
+}
 
-	document.querySelector('svg').setAttribute('width', desiredWidth);
+function initialiseChart() {
+	document.querySelector('svg').setAttribute('width', getPreferredChartWidth());
+	setupChartControls();
+}
 
+function setupChartControls() {
+	const timeKeys = {
+		'past-24-hours'() {
+			const date = new Date();
+			date.setHours(date.getHours() - 1);
+			return date;
+		},
+		'past-week'() {
+			const date = new Date();
+			date.setDate(date.getDate() - 7);
+			return date;
+		},
+		'past-month'() {
+			const date = new Date();
+			date.setMonth(date.getMonth() - 1);
+			return date;
+		},
+		'all-time'() {
+			return 0;
+		}
+	};
+
+	const controlsContainer = document.querySelector('.visualisation__controls');
+	[...controlsContainer.querySelectorAll('[data-time-key]')].forEach(button => {
+		button.addEventListener('click', evt => {
+			const selectedStartTime = timeKeys[evt.target.dataset.timeKey]();
+
+			const allData = getReadings();
+
+			const matchingReadings = allData.filter(reading => {
+				return reading.date > selectedStartTime;
+			});
+
+			console.log(matchingReadings);
+			createChart(matchingReadings);
+		});
+	});
+}
+
+function createChart(data) {
 	const svg = select('svg');
+	svg.selectAll("*").remove();
+
 	const margin = {
 		top: 50,
 		right: 50,
@@ -51,9 +101,7 @@ function init() {
 	const width = Number(svg.attr('width')) - margin.left - margin.right;
 	const height = Number(svg.attr('height')) - margin.top - margin.bottom;
 
-	const bisectDate = bisector(d => {
-		return d.date;
-	}).left;
+	const bisectDate = bisector(d => d.date).left;
 
 	const x = scaleTime().range([0, width]);
 	const y = scaleLinear().range([height, 0]);
@@ -63,17 +111,17 @@ function init() {
 		.y(d => y(d.value));
 
 	const g = svg.append('g')
-		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+		.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-	mockData.forEach(d => {
+	data.forEach(d => {
 		d.value = Number(d.value);
 	});
 
-	x.domain(extent(mockData, d => d.date));
+	x.domain(extent(data, d => d.date));
 
 	y.domain([
-		min(mockData, d => d.value) / 1.005,
-		max(mockData, d => d.value) * 1.005
+		min(data, d => d.value) / 1.005,
+		max(data, d => d.value) * 1.005
 	]);
 
 	g.append('g')
@@ -94,7 +142,7 @@ function init() {
 		.text('(mmol/L)');
 
 	g.append('path')
-		.datum(mockData)
+		.datum(data)
 		.attr('class', 'line')
 		.attr('d', lines);
 
@@ -120,7 +168,7 @@ function init() {
 		.attr('dy', '.31em');
 
 	svg.append('rect')
-		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+		.attr('transform', `translate(${margin.left}, ${margin.top})`)
 		.attr('class', 'overlay')
 		.attr('width', width)
 		.attr('height', height)
@@ -132,9 +180,9 @@ function init() {
 
 	function mousemove() {
 		const x0 = x.invert(mouse(this)[0]);
-		const i = bisectDate(mockData, x0, 1);
-		const d0 = mockData[i - 1];
-		const d1 = mockData[i];
+		const i = bisectDate(data, x0, 1);
+		const d0 = data[i - 1];
+		const d1 = data[i];
 
 		const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
@@ -146,6 +194,12 @@ function init() {
 		focus.select('.x-hover-line').attr('y2', height - y(d.value));
 		focus.select('.y-hover-line').attr('x2', width + width);
 	}
+}
+
+function init() {
+	initialiseChart();
+	const data = getReadings();
+	createChart(data);
 }
 
 export default {init};
