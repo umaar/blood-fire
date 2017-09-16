@@ -1,11 +1,5 @@
 const cleanWeirdBits = require('./clean-weird-bits');
 
-// The server runs on UTC time (0 offset), whereas some clients will have an offset of -60
-function isRunningDifferentTimeZoneServer() {
-	const time = new Date();
-	return time.getTimezoneOffset() === 0;
-}
-
 function calculateLevel(level) {
 	return parseFloat((parseInt(level, 10) / 18)).toFixed(1);
 }
@@ -62,12 +56,6 @@ function transformer(_rawLine) {
 
 	const [date, month, remaining] = timestamp.split('/');
 	const parsedTimestamp = new Date([month, date, remaining].join('/'));
-
-	if (isRunningDifferentTimeZoneServer()) {
-		parsedTimestamp.setHours(parsedTimestamp.getHours() - 1);
-	}
-
-	// console.log(parts);
 
 	const level = calculateLevel(parts[5]);
 	const {icon, description: levelDescription} = getLevelDetails(level);

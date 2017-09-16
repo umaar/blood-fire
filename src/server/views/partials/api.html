@@ -1,0 +1,21 @@
+<p>
+	You can access readings through an API.
+</p>
+
+<ul class="api-list">
+	<li>
+		<p>/api/readings?from=timestamp</p>
+
+		All readings after the time specified on <strong>timestamp</strong>. Example: For the last 24 hours, use <a href="/api/readings?from={{last24Hours}}">from={{ last24Hours }}</a>
+	</li>
+
+	<li>
+		<a href="/api/readings">
+			/api/readings
+		</a>
+
+		<p>
+			All data. <strong>Avoid</strong> using this without the 'from' parameter. Filter for only what you need.
+		</p>
+	</li>
+</ul>
