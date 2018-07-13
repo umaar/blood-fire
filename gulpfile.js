@@ -1,5 +1,3 @@
-// *** dependencies *** //
-
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 const path = require('path');
@@ -19,7 +17,7 @@ const minify = require('uglify-es').minify;
 const rollup = require('rollup');
 const resolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
-const uglify = require('rollup-plugin-uglify');
+const {uglify} = require('rollup-plugin-uglify');
 const revdel = require('gulp-rev-delete-original');
 const rev = require('gulp-rev');
 
@@ -75,7 +73,7 @@ const nodemonConfig = {
 
 gulp.task('default', () => {
 	runSequence(
-		['clean'], ['styles'], ['scripts'], ['images'], ['copy'], ['lr'], ['nodemon'], ['watch']
+		['clean'], ['styles'], ['scripts'], ['images'], ['copy'], ['lr'], ['watch']
 	);
 });
 
@@ -112,8 +110,8 @@ gulp.task('scripts', async function () {
 		input: 'src/client/js/main.js',
 		plugins: [
 			resolve(),
-			commonjs(),
-			uglify({}, minify)
+			commonjs()/*,
+			uglify({}, minify)*/
 		]
 	});
 

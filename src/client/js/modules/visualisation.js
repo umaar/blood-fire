@@ -50,23 +50,19 @@ function initialiseChart() {
 
 function setupChartControls() {
 	const timeKeys = {
-		'past-24-hours'() {
-			const date = new Date();
+		'past-24-hours'(date) {
 			date.setDate(date.getDate() - 1);
 			return date;
 		},
-		'past-3-days'() {
-			const date = new Date();
+		'past-3-days'(date) {
 			date.setDate(date.getDate() - 3);
 			return date;
 		},
-		'past-week'() {
-			const date = new Date();
+		'past-week'(date) {
 			date.setDate(date.getDate() - 7);
 			return date;
 		},
-		'past-month'() {
-			const date = new Date();
+		'past-month'(date) {
 			date.setMonth(date.getMonth() - 1);
 			return date;
 		},
@@ -82,9 +78,12 @@ function setupChartControls() {
 		button.addEventListener('click', ({target}) => {
 			removeDisabledStateFromButtons(buttons);
 			target.disabled = true;
-			const selectedStartTime = timeKeys[target.dataset.timeKey]();
-
 			const allData = getReadings();
+
+			const latestDate = allData[allData.length - 1].date;
+
+			const selectedStartTime = timeKeys[target.dataset.timeKey](new Date(latestDate));
+
 
 			const matchingReadings = allData.filter(reading => {
 				return reading.date > selectedStartTime;
@@ -155,9 +154,28 @@ function createChart(data) {
 		.attr('fill', '#5D6971')
 		.text('(mmol/L)');
 
+	function getLineWidth(itemsToDisplay) {
+		let width = 1;
+
+		if (itemsToDisplay > 1000) {
+			width = 2;
+		} else if (itemsToDisplay > 500) {
+			width = 4
+		} else if (itemsToDisplay > 250) {
+			width = 5
+		} else if (itemsToDisplay > 100) {
+			width = 6;
+		} else if (itemsToDisplay > 0) {
+			width = 7;
+		}
+
+		return width;
+	}
+
 	g.append('path')
 		.datum(data)
 		.attr('class', 'line')
+		.attr('stroke-width', getLineWidth(data.length))
 		.attr('d', lines);
 
 	const focus = g.append('g')
