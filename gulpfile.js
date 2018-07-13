@@ -110,8 +110,8 @@ gulp.task('scripts', async function () {
 		input: 'src/client/js/main.js',
 		plugins: [
 			resolve(),
-			commonjs()/*,
-			uglify({}, minify)*/
+			commonjs(),
+			uglify({}, minify)
 		]
 	});
 
